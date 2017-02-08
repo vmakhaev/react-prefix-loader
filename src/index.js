@@ -3,6 +3,7 @@ const exportDefaultRegex = /export default ([a-zA-Z]*)/
 const classNameRegex = /className=\'([a-zA-Z\-\s]*)\'/g
 
 function loader (source, inputSourceMap) {
+  this.cacheable()
   let matches = exportDefaultContainerRegex.exec(source) ||
     exportDefaultRegex.exec(source)
 
