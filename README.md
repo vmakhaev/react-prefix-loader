@@ -81,14 +81,41 @@ export default class MyComponent extends React.Component {
 }
 ```
 
+Features:
+- lower-case classes are prefixed with the `ComponentName`: 
+  - `title` --> `ComponentName-title`
+  - `content` --> `ComponentName-content`
+  - `leftListItem` --> `ComponentName-leftListItem`
+- `root` is a treated as a special class name and will be replaces with the `ComponentName`:
+  - `root` --> `ComponentName`
+- supports `className`s which have the value of either a string or a `{}` binding:
+    ```jsx
+    className='title'
+    className={`title ${this.props.className}`}
+    className={"title " + this.props.className}
+    ```
+- within `{}` binding it also does the replacement if the `classnames` function is called (as `classnames` or as `c`):
+    ```jsx
+    className={c('title', {'-active': true})}
+    className={classnames(`title ${this.props.className}`, {
+      '-active': true
+    }}
+    ```
+
 Ignores:
 - filenames that starts from not capital letter
 - modifiers (classes that starts from hyphen)
 - classes that starts from capital letter
 
 Caveats:
-- searches for 'export default ComponentName' construction to find component name
-- prefixes only className fields that are set as string
+- the class name to replace be the very first class name within the `className` attribute.
+  
+  For example, in `className='Form item'` the `item` won't get prefixed:
+  - `className='Form item'` --> `className='Form item'`
+  
+  If you want it to be prefixed, just place it first:
+  - `className='item Form'` --> `className='MyComponent-item Form'`
+- searches for `export default ComponentName` or `export default class ComponentName` construction to find component name
 
 ## Installation
 
