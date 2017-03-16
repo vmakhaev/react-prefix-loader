@@ -1,6 +1,6 @@
-const exportDefaultContainerRegex = /export default .*\(([a-zA-Z]*)/
-const exportDefaultRegex = /export default ([a-zA-Z]*)/
-const classNameRegex = /className=\'([a-zA-Z\-\s]*)\'/g
+const exportDefaultContainerRegex = /export\s+default\s+.*\(([A-Z][A-Za-z_\$\d]*)/g
+const exportDefaultRegex = /export\s+default(?:\s+class)?\s+([A-Z][A-Za-z_\$\d]*)/g
+const classNameRegex = /(className=(?:\{\s*c\(|\{\s*classnames\(|\{\s*)?\s*[\'\"\`]\s*)([a-z][a-zA-Z\d_\-]*)/g
 
 function loader (source, inputSourceMap) {
   this.cacheable()
@@ -8,19 +8,12 @@ function loader (source, inputSourceMap) {
     exportDefaultRegex.exec(source)
 
   if (matches) {
-    let name = matches[1]
+    let jsClassName = matches[1]
 
-    source = source.replace(classNameRegex, (text, classNames) => {
-      let prefixedClassNames = classNames
-        .split(' ')
-        .map((className) => {
-          if (ignoreClassName(className, this.options.reactPrefixLoader)) return className
-
-          return `${name}-${className}`
-        })
-        .join(' ')
-
-      return `className='${prefixedClassNames}'`
+    source = source.replace(classNameRegex, (match, prefix, cssClassName) => {
+      if (ignoreClassName(cssClassName, this.options.reactPrefixLoader)) return prefix + cssClassName
+      if (cssClassName === 'root') return `${prefix}${jsClassName}`
+      return `${prefix}${jsClassName}-${cssClassName}`
     })
   }
 
@@ -28,8 +21,7 @@ function loader (source, inputSourceMap) {
 }
 
 function ignoreClassName (className, options = {}) {
-  return classMatchesTest(className, options.ignore) ||
-    className.trim().length === 0 || /^[A-Z-]/.test(className)
+  return classMatchesTest(className, options.ignore) || /^[A-Z-]/.test(className)
 }
 
 function classMatchesTest (className, ignore) {
