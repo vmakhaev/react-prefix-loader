@@ -41,6 +41,8 @@ describe('className regexps', () => {
 const exportDefaultRegex = /export\s+default(?:\s+class)?\s+([A-Z][A-Za-z_\$\d]*)/
 let exportDefaultTests = [
   {in: 'export default MyClass', out: 'MyClass'},
+  {in: '\n    export default Toolbar    \n', out: 'Toolbar'},
+  {in: '\n    export default Toolbar\n', out: 'Toolbar'},
   {in: 'export   default   MyClass', out: 'MyClass'},
   {in: 'export default class MyClass', out: 'MyClass'},
   {in: 'export   default   class   MyClass', out: 'MyClass'},
@@ -144,7 +146,7 @@ let loaderFunctionalTest = {
     }
   `
 }
-describe.only('loader', () => {
+describe('loader', () => {
 
   it('big functional test of loader', () => {
     let context = {

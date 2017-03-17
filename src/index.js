@@ -1,11 +1,10 @@
-const exportDefaultContainerRegex = /export\s+default\s+.*\(([A-Z][A-Za-z_\$\d]*)/g
-const exportDefaultRegex = /export\s+default(?:\s+class)?\s+([A-Z][A-Za-z_\$\d]*)/g
+const exportDefaultContainerRegex = /export\s+default\s+.*\(([A-Z][A-Za-z_\$\d]*)/
+const exportDefaultRegex = /export\s+default(?:\s+class)?\s+([A-Z][A-Za-z_\$\d]*)/
 const classNameRegex = /(className=(?:\{\s*c\(|\{\s*classnames\(|\{\s*)?\s*[\'\"\`]\s*)([a-z][a-zA-Z\d_\-]*)/g
 
 function loader (source, inputSourceMap) {
   this.cacheable()
-  let matches = exportDefaultContainerRegex.exec(source) ||
-    exportDefaultRegex.exec(source)
+  let matches = source.match(exportDefaultContainerRegex) || source.match(exportDefaultRegex)
 
   if (matches) {
     let jsClassName = matches[1]
