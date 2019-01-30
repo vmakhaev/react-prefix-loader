@@ -10,7 +10,7 @@ function loader (source, inputSourceMap) {
     let jsClassName = matches[1]
 
     source = source.replace(classNameRegex, (match, prefix, cssClassName) => {
-      if (ignoreClassName(cssClassName, this.options.reactPrefixLoader)) return prefix + cssClassName
+      if (ignoreClassName(cssClassName, this.options && this.options.reactPrefixLoader)) return prefix + cssClassName
       if (cssClassName === 'root') return `${prefix}${jsClassName}`
       return `${prefix}${jsClassName}-${cssClassName}`
     })
